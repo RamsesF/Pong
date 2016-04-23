@@ -33,7 +33,7 @@ Pong with multiplayer, using Node.js and socket.io. Only two players, and unlimi
 - refresh-event which will update how many players and spectators there are.
 
 
-## Important contributers:
+## Important contributors:
 - FlouwR: https://github.com/RamsesF https://twitter.com/FlouwRamses
 - GregoireAmeye https://github.com/gregoireameye
  
