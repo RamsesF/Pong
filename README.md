@@ -2,9 +2,9 @@
 Pong with multiplayer, using Node.js and socket.io. Only two players, and unlimited spectators.
 
 ## What did I use
--Node.js
--express
--socket.io
+- Node.js
+- Express
+- Socket.io
 
 ## How to get this thing working?
 1. Download my project as a ZIP.
