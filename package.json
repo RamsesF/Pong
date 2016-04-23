@@ -1,0 +1,9 @@
+{
+   "name": "PONG",
+   "description": "Pong game made for New Media",
+   "author": "Ramses and Gregoire",
+   "dependencies" : {
+      "express": "4.x",
+      "socket.io": "*"
+   }
+}
