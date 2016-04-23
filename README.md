@@ -26,7 +26,7 @@ Pong with multiplayer, using Node.js and socket.io. Only two players, and unlimi
 - Reset everything.
 
 ## Versions
-### V 0.1 (CURRENT)
+### V 0.1 (23-04-2016) (CURRENT)
 - Basic login system.
 - Choosing between player and spectator.
 - Showing the playfield.
