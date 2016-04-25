@@ -45,5 +45,4 @@ Pong with multiplayer, using Node.js and socket.io. Only two players, and unlimi
 
 ## Important testers:
 - Mathias https://github.com/dallian354
-- Faye 
 - Esteban from GLADOS Workgroup https://github.com/thecodewizard http://estebandenis.ddns.net/
