@@ -17,6 +17,8 @@ Pong with multiplayer, using Node.js and socket.io. Only two players, and unlimi
 8. Have fun!
 
 ## TO DO
+- Working spectating.
+- Holding controls instead of tapping.
 - Show players.
 - Show ball.
 - Show score (saved at server).
