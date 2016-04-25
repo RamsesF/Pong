@@ -4,27 +4,16 @@ var timer;
 var playerArray;
 var spectators;
 var readyPlayers;
+var playerOneOrTwo;
+
+var serverProcentUpper;
+var serverProcentDown;
+
+var player1, player2, ball, maxX, maxY, balkWidth, balkHeight, ballWidth, X1,Y1, X2, Y2, ballX, ballY, fieldWidth, fieldHeight;
+var timer;
 
 
 
-/*
-  ! TO DO LIST !
-   -show player divs, zie showPlayers();
-   -update them, zie refreshPositions
-   this is what you get from the server:
-
- var normalData = {
- playerOneX: 50,
- playerTwoX: 50,
- ballX: 50,
- ballY: 50
- };
-
-  -
-  - WIN EVENT
-
-
- */
 
 /* ---- WHEN THE DOM HAS BEEN LOADED ---- */
 document.addEventListener("DOMContentLoaded", function() {
@@ -35,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		refresh();
 		/* FOR DEBUGGING */
 		console.clear();
+		console.log("--------------------------------");
 		console.log("Player 1: " + playerArray[0]);
 		console.log("Player 2: " + playerArray[1]);
 		console.log("Amount of spectators: " + spectators);
@@ -46,20 +36,16 @@ document.addEventListener("DOMContentLoaded", function() {
 			console.log("--------------------------------");
 			console.log("Stopped timer for data");
 			clearInterval(timer);
+			showFieldForPlayers();
+			resetPositionsAtServer();
+			showPlayers();
 			startGame();
 		} else {
 			console.log("Are both players ready: false");
 			console.log("--------------------------------");
 		}
-
-
-
-		//Check if both players are ready
-		//if they are ready, start a countdown on both clients
-		
 	}, 250);
 });
-
 //this function asks for the array that fills in the global vars. Loops every 250ms.
 function refresh() {
 	socket.emit("askArray");
@@ -69,8 +55,6 @@ function refresh() {
 		readyPlayers = data.readyPlayers;
 	})
 }
-
-
 //Shows two buttons, spectator or player and gives them an eventlistener.
 function toonChoice() {
 	var choices = document.getElementById("choices");
@@ -95,6 +79,8 @@ function toonChoice() {
 		chooseSpectator();
 	});
 }
+/* -------------------------------------- */
+
 
 
 /* ---- PLAYER EVENTS ---- */
@@ -118,7 +104,6 @@ function showReadyUpButton() {
 }
 //when the player selects he's ready.
 function readyUp() {
-	console.log("You are ready!");
 	var readyButton = document.getElementById("readyUpButton");
 	readyButton.innerHTML = "";
 	readyButton.style.backgroundColor = "green";
@@ -132,14 +117,151 @@ function showFieldForPlayers() {
 	var playField = document.getElementById("playField");
 	playField.style.display = "block";
 }
+//When the field has been shown, show the players.
+function showPlayers() {
+	var field = document.getElementById("field");
+
+
+	maxX = fieldWidth = field.clientWidth;
+	maxY = fieldHeight = field.clientHeight;
+
+	balkWidth = fieldWidth/10;
+	balkHeight = fieldWidth/100;
+
+	player1 = document.createElement("div");
+	player2 = document.createElement("div");
+	ball = document.createElement('div');
+
+	player1.style.width = balkWidth + "px";
+	player2.style.width = balkWidth + "px";
+
+	//set classes & id's
+	player1.id = "player1";
+	player2.id = "player2";
+	ball.id = "ball";
+
+	player1.className = "balk";
+	player2.className = "balk";
+
+
+
+	ballWidth = ball.clientWidth;
+
+	X1 = maxX - balkWidth;
+	Y1 = 0;
+
+	X2 = maxX - balkWidth;
+	Y2 = maxY;
+
+	ballX = maxX/2 - ballWidth/2;
+	ballY = maxY/2 - ballWidth/2;
+
+	player1.style.backgroundColor = "yellow";
+	player2.style.backgroundColor = "yellow";
+
+	field.appendChild(player1);
+	field.appendChild(player2);
+	field.appendChild(ball);
+
+	init();
+
+	/*
+	 document.addEventListener("keydown", move, false);
+	 */
+	// X1 of X2 sturen naar server
+
+	if(playerArray[0] == "/#" + socket.id) {
+
+		playerOneOrTwo = 1;
+		document.getElementById("leftButton").addEventListener("mousedown", function() {
+			movePlayerOne("left");
+		}, false);
+		document.getElementById("rightButton").addEventListener("mousedown", function() {
+			movePlayerOne("right");
+		}, false);
+
+	} else {
+		var field = document.getElementById("field");
+		field.style.webkitTransform = "rotate(180deg)";
+		field.style.webkitTransform = "scaleY(-1)";
+		playerOneOrTwo = 2;
+		document.getElementById("leftButton").addEventListener("mousedown",function() {
+			movePlayerTwo("left")
+		}, false);
+		document.getElementById("rightButton").addEventListener("mousedown", function() {
+			movePlayerTwo("right")
+		}, false);
+
+	}
+}
+//1) ask positions at server 2) updatePlayers their positions with the positions
+function init(){
+	refreshPositions();
+	updatePlayers();
+}
+//Gets the info from the server and pushes them in global vars in our client.
+function refreshPositions() {
+    socket.emit("askPositions");
+    socket.on("givePositions", function(data){
+        serverProcentUpper = data.data.playerTwoX;
+        serverProcentDown = data.data.playerOneX;
+    });
+    updatePlayers();
+}
+//update player when they get info from the server.
+function updatePlayers(){
+    if(playerOneOrTwo == 1) {
+        player1.style.left = maxX / 100 * serverProcentUpper + "px";
+        player1.style.top = Y1 + 20 +"px";
+
+        player2.style.left = maxX / 100 * serverProcentDown - balkWidth +"px";
+        player2.style.top = maxY- 20 +"px";
+    } else {
+
+        player1.style.left = maxX / 100 * serverProcentUpper + "px";
+        player1.style.top = Y1 + 20 +"px";
+
+        player2.style.left = maxX / 100 * serverProcentDown - balkWidth +"px";
+        player2.style.top = maxY- 20 +"px";
+    }
+}
 /* ----------------------- */
 
+
+
+/* ---- MOVE EVENTS ---- */
+function movePlayerOne(direction) {
+    if(direction == "left") {
+        socket.emit("movePlayerOneLeft");
+        refreshPositions();
+    }
+    if(direction == "right") {
+        socket.emit("movePlayerOneRight");
+        refreshPositions();
+    }
+    updatePlayers();
+}
+function movePlayerTwo(direction) {
+    if(direction == "left") {
+        socket.emit("movePlayerTwoLeft");
+    }
+    if(direction == "right") {
+        socket.emit("movePlayerTwoRight");
+    }
+    updatePlayers();
+}
+/* --------------------- */
+
+/* ---- RESET EVENTS ---- */
+function resetPositionsAtServer() {
+	socket.emit("resetPos");
+}
+/* ---------------------- */
 
 
 /* ---- SPECTATOR EVENTS ---- */
 //Event for when you choose to be a spectator.
 function chooseSpectator() {
-	console.log("I chose to be a spectator!");
 	socket.emit("pushMeAsSpectator");
 	showFieldForSpectators();
 }
@@ -158,86 +280,34 @@ function showFieldForSpectators() {
 /* --------------------------- */
 
 
-
-
-
-
-
-
-
-
-//this function loops every 300ms, and will ask the pos of the players and ball
-// to the server. This one is required for the startGame() function.
-function refreshPositions() {
-	socket.emit("askPositions");
-	socket.on("givePositions", function(data) {
-		//data will give you the object.
-		/*
-			This is how it should look when you get it:
-			var normalData = {
-			playerOneX: 50,
-			playerTwoX: 50,
-			ballX: 50,
-			ballY: 50
-		};
-		*/
-
-
-
-	});
-}
-
-/* MAIN GAME LOOP */
+/* ---- MAIN GAME LOOP ---- */
 function startGame() {
-	console.log("Game starting...");
-	console.log("Showing field for players...");
-	showFieldForPlayers();
-	console.log("Resetting positoins in server...");
-	resetPositionsAtServer();
-	console.log("Showing players...");
-	showPlayers();
-	console.log("Starting Gameloop...");
-	var timer2 = setInterval(function(){
+	function mainLoop() {
 		refreshPositions();
-	}, 300);
+		updatePlayers();
+		setTimeout(mainLoop, 25);
+		/*
+		 console.clear();
+		 console.log("----------------");
+		 if(playerOneOrTwo == 1) {
+		 console.log("I'm player 1");
+		 } else {
+		 console.log("I'm player 2");
+		 }
+		 console.log("0-90 range");
+		 console.log("Position player 1: " + serverProcentDown);
+		 console.log("Position player 2: " + serverProcentUpper);
+		 console.log("----------------");
+		 */
+	}
+	mainLoop();
 }
-
-
-function resetPositionsAtServer() {
-	socket.emit("resetPos");
-}
+/* ----------------------- */
 
 
 
 
-function showPlayers() {
-
-
-	var field = document.getElementById("field");
-
-	var player1 = document.createElement("div");
-	var player2 = document.createElement("div");
-
-	field.appendChild(player1);
-	field.appendChild(player2);
-
-
-	player1.id = "player1";
-	player2.id = "player2";
-
-	player1.style.height = field.offsetHeight / 100;
-	player2.style.height = field.offsetHeight / 100;
-
-	player1.style.width = field.offsetWidth / 10;
-	player2.style.width = field.offsetWidth / 10;
-
-	player1.style.float = "left";
-	player2.style.float = "left";
-
-	player1.style.backgroundColor = "yellow";
-	player2.style.backgroundColor = "yellow";
 
 
 
 
-};
