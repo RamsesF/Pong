@@ -5,6 +5,9 @@ var playerArray;
 var spectators;
 var readyPlayers;
 
+var player1, player2, ball, maxX, maxY, balkWidth, balkHeight, ballWidth, X1,Y1, X2, Y2, ballX, ballY, fieldWidth, fieldHeight;
+var timer;
+
 
 
 /*
@@ -209,35 +212,105 @@ function resetPositionsAtServer() {
 
 
 
-
 function showPlayers() {
-
-
 	var field = document.getElementById("field");
 
-	var player1 = document.createElement("div");
-	var player2 = document.createElement("div");
+	maxX = fieldWidth = field.clientWidth;
+	maxY = fieldHeight = field.clientHeight;
 
-	field.appendChild(player1);
-	field.appendChild(player2);
+	balkWidth = fieldWidth/10;
+	balkHeight = fieldWidth/100;
 
+	player1 = document.createElement("div");
+	player2 = document.createElement("div");
+	ball = document.createElement('div');
 
+	player1.style.width = balkWidth + "px";
+	player2.style.width = balkWidth + "px";
+
+	//set classes & id's
 	player1.id = "player1";
 	player2.id = "player2";
+	ball.id = "ball";
 
-	player1.style.height = field.offsetHeight / 100;
-	player2.style.height = field.offsetHeight / 100;
+	player1.className = "balk";
+	player2.className = "balk";
 
-	player1.style.width = field.offsetWidth / 10;
-	player2.style.width = field.offsetWidth / 10;
 
-	player1.style.float = "left";
-	player2.style.float = "left";
+
+	ballWidth = ball.clientWidth;
+
+	X1 = maxX - balkWidth;
+	Y1 = 0;
+
+	X2 = maxX - balkWidth;
+	Y2 = maxY;
+
+	ballX = maxX/2 - ballWidth/2;
+	ballY = maxY/2 - ballWidth/2;
 
 	player1.style.backgroundColor = "yellow";
 	player2.style.backgroundColor = "yellow";
 
+	field.appendChild(player1);
+	field.appendChild(player2);
+	field.appendChild(ball);
+
+	init();
+
+	document.addEventListener("keydown", move, false);
+	// X1 of X2 sturen naar server
+	document.getElementById("leftButton").addEventListener("mousedown", moveLeft, false);
+	document.getElementById("rightButton").addEventListener("mousedown", moveRight, false);
+
+};
 
 
+function init(){
+	update();
+}
 
+function moveLeft(){
+	if(X2 < maxX-balkWidth)
+	{
+		X2 +=balkWidth/4;
+	}
+	update();
+}
+function moveRight(){
+	if(X2 > 1)
+	{
+		X2 -=balkWidth/4;
+	}
+	update();
+}
+
+function move (e) {
+	var keyCode = e.keyCode;
+	if(keyCode == 37 && X1 < maxX-balkWidth-1)
+	{
+		X1 +=balkWidth/4;
+	}
+	else if(keyCode == 39 && X1 > 0)
+	{
+		X1 -=balkWidth/4;
+	}
+	else if(keyCode == 81 && X2 > 0)
+	{
+		X2 -=balkWidth/4;
+	}
+	else if(keyCode == 68 && X2 < maxX-balkWidth)
+	{
+		X2 +=balkWidth/4;
+	}
+
+	//update();
+}
+
+function update(){
+	player1.style.left = X1+"px";
+	player1.style.top = Y1+"px";
+
+	player2.style.left = maxX-X2-2*balkWidth+"px";
+	player2.style.top = maxY-balkHeight+"px";
 };

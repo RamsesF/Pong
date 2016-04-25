@@ -81,6 +81,9 @@ body {
 	margin-right: 5%;
 	width:90%;
 	height:90%;
+
+	/*border-left: Black solid 2px;
+	border-right: Black solid 2px;*/
 }
 
 #buttons {
@@ -100,6 +103,15 @@ body {
 	height:100%;
 	text-align:center;
 	float:left;
+
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none;   /* Chrome/Safari/Opera */
+	-khtml-user-select: none;    /* Konqueror */
+	-moz-user-select: none;      /* Firefox */
+	-ms-user-select: none;       /* Internet Explorer/Edge */
+	user-select: none;
+
+	cursor: default;
 }
 
 #leftButton {
@@ -117,4 +129,32 @@ body {
     background-color: red;
 
     display:none;
+}
+
+
+body{
+	overflow: hidden;
+}
+
+
+.balk{
+	min-height: 5px;
+	height: 10px;
+	position: relative;
+}
+
+
+#ball{
+	width:4px;
+	height:4px;
+	position: relative;
+	background: Black;
+}
+
+#player1{
+	float: left;
+}
+
+#player2{
+	float: left;
 }
