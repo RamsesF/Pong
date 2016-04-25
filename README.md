@@ -24,6 +24,8 @@ Pong with multiplayer, using Node.js and socket.io. Only two players, and unlimi
 - Win event.
 - Lose event.
 - Reset everything.
+- Player button disabling.
+- Showing amount of players and spectators.
 
 ## Versions
 ### V 0.1 (23-04-2016) (CURRENT)
