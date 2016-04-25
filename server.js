@@ -18,8 +18,8 @@ var readyPlayers = [false, false];
 var spectators = 0;
 
 var positionData = {
-    playerOneX: 50,
-    playerTwoX: 50,
+    playerOnePercent: 44,
+    playerTwoPercent: 44,
     ballX: 50,
     ballY: 50
 };
@@ -59,15 +59,39 @@ io.on('connection', function(socket) {
             readyPlayers[1] = true;
         }
     });
+
     
-    socket.on("askPositions", function() {
-        socket.emit("givePositions", { positionObject: positionData } );
+    socket.on("askPositions", function(){
+        socket.emit("givePositions", { data : positionData } );
     });
-    
+
+    //MOVEMENT-EVENTS FOR CLIENT
+    socket.on("movePlayerOneLeft", function() {
+        if(positionData.playerOneX >= 2) {
+            positionData.playerOneX = positionData.playerOneX - 2;
+        }
+    });
+    socket.on("movePlayerOneRight", function() {
+        if(positionData.playerOneX <= 88) {
+            positionData.playerOneX = positionData.playerOneX + 2;
+        }
+    });
+    socket.on("movePlayerTwoLeft", function() {
+        if(positionData.playerTwoX >= 2) {
+            positionData.playerTwoX = positionData.playerTwoX - 2;
+        }
+    });
+    socket.on("movePlayerTwoRight", function() {
+        if(positionData.playerTwoX <= 88) {
+            positionData.playerTwoX = positionData.playerTwoX + 2;
+        }
+    });
+
+        
     socket.on("resetPos", function() {
         var normalData = {
-            playerOneX: 50,
-            playerTwoX: 50,
+            playerOneX: 44,
+            playerTwoX: 44,
             ballX: 50,
             ballY: 50
         };
