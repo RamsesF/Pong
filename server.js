@@ -59,6 +59,7 @@ io.on('connection', function(socket) {
             readyPlayers[1] = true;
         }
     });
+    
 
     
     socket.on("askPositions", function(){
@@ -89,6 +90,9 @@ io.on('connection', function(socket) {
 
         
     socket.on("resetPos", function() {
+    resetData();
+    });
+    function resetData() {
         var normalData = {
             playerOneX: 44,
             playerTwoX: 44,
@@ -97,8 +101,7 @@ io.on('connection', function(socket) {
         };
 
         positionData = normalData;
-        
-    });
+    }
     /* ---------------------------- */
     
     
@@ -107,6 +110,8 @@ io.on('connection', function(socket) {
     
     /* ---- DISCONNECT EVENT ---- */
 	socket.on('disconnect', function() {
+        if("#/" + socket.id == players[1] || "/#" + socket.id == players[0])
+        resetData();
         console.log("User " + socket.id + " has disconnected.");
 
         if(players[0] == socket.id) {

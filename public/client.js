@@ -30,19 +30,32 @@ document.addEventListener("DOMContentLoaded", function() {
 		console.log("Amount of spectators: " + spectators);
 		console.log("Is player 1 ready? " + readyPlayers[0]);
 		console.log("Is player 2 ready? " + readyPlayers[1]);
+		
+		if(playerArray[0] != "empty" && playerArray[1] != "empty") {
+			var playerButton = document.getElementById("playerChoice");
+			playerButton.innerHTML = "";
+			playerButton.innerHTML = "Cannot choose player, already two readying up. Spectate instead!";
 
-		if(readyPlayers[0] == true && readyPlayers[1] == true) {
-			console.log("Are both players ready: true.");
-			console.log("--------------------------------");
-			console.log("Stopped timer for data");
-			clearInterval(timer);
-			showFieldForPlayers();
-			resetPositionsAtServer();
-			showPlayers();
-			startGame();
-		} else {
-			console.log("Are both players ready: false");
-			console.log("--------------------------------");
+
+			if (readyPlayers[0] == true && readyPlayers[1] == true) {
+				if ("/#" + socket.id == playerArray[0] || "/#" + socket.id == playerArray[1]) {
+					//If you're a player
+					console.log("Are both players ready: true.");
+					console.log("--------------------------------");
+					console.log("Stopped timer for data");
+					clearInterval(timer);
+					showFieldForPlayers();
+					resetPositionsAtServer();
+					showPlayers();
+					startGame();
+				} else {
+					//SPECTATOR
+					//do nothing
+					var playerButton = document.getElementById("playerChoice");
+					playerButton.innerHTML = "";
+					playerButton.innerHTML = "Cannot choose player, already two readying up. Spectate instead!";
+				}
+			}
 		}
 	}, 250);
 });
@@ -87,8 +100,14 @@ function toonChoice() {
 //Event for when you choose to be a player.
 function choosePlayer() {
 	console.log("i want to be a player");
-	socket.emit("pushMeAsPlayer");
-	showReadyUpButton();
+
+	if(playerArray[0] == "empty" || playerArray[1] == "empty") {
+		socket.emit("pushMeAsPlayer");
+		showReadyUpButton();
+	} else {
+		//Sorry, but there are two players
+	}
+
 }
 //When you selected to be a player, there needs to be a readybutton.
 function showReadyUpButton() {
@@ -262,8 +281,9 @@ function resetPositionsAtServer() {
 /* ---- SPECTATOR EVENTS ---- */
 //Event for when you choose to be a spectator.
 function chooseSpectator() {
-	socket.emit("pushMeAsSpectator");
 	showFieldForSpectators();
+	showPlayers();
+	startSpectating();
 }
 //When a spectator goes to the spectator room, it has to show the spectator field.
 //Ofcourse, the spectator has no buttons.
@@ -277,6 +297,15 @@ function showFieldForSpectators() {
 	playField.style.height = "100vh";
 	buttons.style.display = "none";
 }
+//Function that updates the spectating game
+function startSpectating() {
+	function mainLoop() {
+		refreshPositions();
+		updatePlayers();
+		setTimeout(mainLoop, 25);
+	}
+	mainLoop();
+}
 /* --------------------------- */
 
 
@@ -286,19 +315,6 @@ function startGame() {
 		refreshPositions();
 		updatePlayers();
 		setTimeout(mainLoop, 25);
-		/*
-		 console.clear();
-		 console.log("----------------");
-		 if(playerOneOrTwo == 1) {
-		 console.log("I'm player 1");
-		 } else {
-		 console.log("I'm player 2");
-		 }
-		 console.log("0-90 range");
-		 console.log("Position player 1: " + serverProcentDown);
-		 console.log("Position player 2: " + serverProcentUpper);
-		 console.log("----------------");
-		 */
 	}
 	mainLoop();
 }

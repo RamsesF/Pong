@@ -7,18 +7,15 @@ Pong with multiplayer, using Node.js and socket.io. Only two players, and unlimi
 - Socket.io
 
 ## How to get this thing working?
-1. Download my project as a ZIP here: https://github.com/RamsesF/Pong/archive/master.zip.
+1. Download my project as a ZIP.
 2. UnZIP my project and paste it where you can access it easily.
-3. Make sure you have npm & node.js installed. https://nodejs.org/en/. Downloading node.js will have npm automatically installed. I personally used v4.4.0. Maybe I should update.
-4. Open up your console/CMD and navigate to the project. You need to be in the Pong folder. (cd is your friend)
+3. Make sure you have npm & node.js installed. https://nodejs.org/en/ <- downloading node.js will have npm automatically
+4. Open up your console/CMD and navigate to the project.
 5. When you have npm installed, use "npm install" to install all my used packages.
 6. When the packages are installed, use "node server.js" to get the server up and running!
-7. Navigate to the HOST-IP ADDRESS via your favorite browser. You can look this up by typing "ipconfig" on the machine that is hosting the server. The server runs on port 8080. (hint: type :8080 after your host-ip adress in your browser).
-8. Have fun!
+7. Navigate to your IP-address with your browser, and have fun!
 
 ## TO DO
-- Working spectating.
-- Holding controls instead of tapping.
 - Show players.
 - Show ball.
 - Show score (saved at server).
@@ -44,5 +41,3 @@ Pong with multiplayer, using Node.js and socket.io. Only two players, and unlimi
  
 
 ## Important testers:
-- Mathias https://github.com/dallian354
-- Esteban from GLADOS Workgroup https://github.com/thecodewizard http://estebandenis.ddns.net/
