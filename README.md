@@ -17,26 +17,26 @@ Pong with multiplayer, using Node.js and socket.io. Only two players, and unlimi
 8. Have fun!
 
 ## TO DO
-- Working spectating.
 - Holding controls instead of tapping.
-- Show players.
 - Show ball.
 - Show score (saved at server).
-- Update positions from players and ball.
-- Make movement possible.
-- Win event.
-- Lose event.
-- Reset everything.
-- Player button disabling.
+- Update positions from ball (together with players).
+- Win event and lose event.
+- ResetEverything function (when a player wins).
 - Showing amount of players and spectators.
 
 ## Versions
-### V 0.1 (23-04-2016) (CURRENT)
+### V 0.1 (23-04-2016) 
 - Basic login system.
 - Choosing between player and spectator.
 - Showing the playfield.
 - refresh-event which will update how many players and spectators there are.
-
+ 
+### V 0.2 (26-04-2016) (CURRENT)
+- Movement made possible!
+- Spectating works
+- Players are now unable to choose Player when there are already two present.
+- Updated some faulty functions that were updating server vars (unwanted).
 
 ## Important contributors:
 - FlouwR: https://github.com/RamsesF https://twitter.com/FlouwRamses
