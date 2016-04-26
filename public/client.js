@@ -9,7 +9,7 @@ var playerOneOrTwo;
 var serverProcentUpper;
 var serverProcentDown;
 
-var player1, player2, ball, maxX, maxY, balkWidth, balkHeight, ballWidth, X1,Y1, X2, Y2, ballX, ballY, fieldWidth, fieldHeight;
+var player1, player2, ball, maxX, maxY, balkWidth, balkHeight, ballWidth, X1,Y1, X2, Y2, ballX, ballY, fieldWidth, fieldHeight, ballStartPositionX, ballStartPositionY;
 var timer;
 
 
@@ -150,7 +150,7 @@ function showPlayers() {
 	maxY = fieldHeight = field.clientHeight;
 
 	balkWidth = fieldWidth/10;
-	balkHeight = fieldWidth/100;
+	balkHeight = fieldHeight/100;
 
 	player1 = document.createElement("div");
 	player2 = document.createElement("div");
@@ -158,6 +158,8 @@ function showPlayers() {
 
 	player1.style.width = balkWidth + "px";
 	player2.style.width = balkWidth + "px";
+	player1.style.height = balkHeight + "px";
+	player2.style.height = balkHeight + "px";
 
 	//set classes & id's
 	player1.id = "player1";
@@ -169,7 +171,11 @@ function showPlayers() {
 
 
 
-	ballWidth = ball.clientWidth;
+	ballWidth = maxX / 100;
+
+
+	ball.style.height = ballWidth+"px";
+	ball.style.width = ballWidth+"px";
 
 	X1 = maxX - balkWidth;
 	Y1 = 0;
@@ -177,8 +183,6 @@ function showPlayers() {
 	X2 = maxX - balkWidth;
 	Y2 = maxY;
 
-	ballX = maxX/2 - ballWidth/2;
-	ballY = maxY/2 - ballWidth/2;
 
 	player1.style.backgroundColor = "yellow";
 	player2.style.backgroundColor = "yellow";
@@ -229,24 +233,28 @@ function refreshPositions() {
     socket.on("givePositions", function(data){
         serverProcentUpper = data.data.playerTwoX;
         serverProcentDown = data.data.playerOneX;
+		ballX = data.data.ballX;
+		ballY = data.data.ballY;
     });
     updatePlayers();
+	updateBall();
 }
 //update player when they get info from the server.
 function updatePlayers(){
     if(playerOneOrTwo == 1) {
-        player1.style.left = maxX / 100 * serverProcentUpper + "px";
-        player1.style.top = Y1 + 20 +"px";
+        player1.style.left = maxX - (maxX * serverProcentUpper / 100 ) - balkWidth + "px";
+        player1.style.top = Y1 + balkHeight +"px";
 
-        player2.style.left = maxX / 100 * serverProcentDown - balkWidth +"px";
-        player2.style.top = maxY- 20 +"px";
+
+        player2.style.left = maxX * serverProcentDown / 100 - balkWidth +"px";
+        player2.style.top = maxY- balkHeight*2 +"px";
     } else {
 
-        player1.style.left = maxX / 100 * serverProcentUpper + "px";
-        player1.style.top = Y1 + 20 +"px";
+        player1.style.left = maxX * serverProcentUpper / 100 + "px";
+        player1.style.top = Y1 + balkHeight +"px";
 
-        player2.style.left = maxX / 100 * serverProcentDown - balkWidth +"px";
-        player2.style.top = maxY- 20 +"px";
+        player2.style.left = maxX - (maxX * serverProcentDown / 100)-balkWidth-balkWidth+"px";
+        player2.style.top = maxY- balkHeight*2 +"px";
     }
 }
 /* ----------------------- */
@@ -304,11 +312,6 @@ function showFieldForSpectators() {
 }
 //Function that updates the spectating game
 function startSpectating() {
-	function mainLoop() {
-		refreshPositions();
-		updatePlayers();
-		setTimeout(mainLoop, 25);
-	}
 	mainLoop();
 }
 /* --------------------------- */
@@ -316,18 +319,30 @@ function startSpectating() {
 
 /* ---- MAIN GAME LOOP ---- */
 function startGame() {
-	function mainLoop() {
-		refreshPositions();
-		updatePlayers();
-		setTimeout(mainLoop, 25);
-	}
 	mainLoop();
 }
 /* ----------------------- */
+function mainLoop() {
+	refreshPositions();
+	updatePlayers();
+	if(playerOneOrTwo == 1) {
+		socket.emit("moveBall");
+	}
+	setTimeout(mainLoop, 25);
+}
 
 
 
-
+function updateBall(){
+	if(playerOneOrTwo == 1) {
+		ball.style.left = ballX/100*maxX + "px";
+		ball.style.top = ballY/166*maxY + "px";
+	}
+	else {
+		ball.style.left = (maxX - ballX/100*maxX - ballWidth) + "px";
+		ball.style.top = ballY/166*maxY + "px";
+	}
+}
 
 
 

@@ -84,6 +84,7 @@ body {
 
 	/*border-left: Black solid 2px;
 	border-right: Black solid 2px;*/
+	overflow: hidden;
 }
 
 #buttons {
@@ -139,14 +140,11 @@ body{
 
 .balk{
 	min-height: 5px;
-	height: 10px;
 	position: relative;
 }
 
 
 #ball{
-	width:4px;
-	height:4px;
 	position: relative;
 	background: Black;
 }
