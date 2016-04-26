@@ -51,11 +51,16 @@ document.addEventListener("DOMContentLoaded", function() {
 				} else {
 					//SPECTATOR
 					//do nothing
-					var playerButton = document.getElementById("playerChoice");
-					playerButton.innerHTML = "";
-					playerButton.innerHTML = "Cannot choose player, already two readying up. Spectate instead!";
+					var playerButton2 = document.getElementById("playerChoice");
+					playerButton2.innerHTML = "";
+					playerButton2.innerHTML = "Cannot choose player, already two readying up. Spectate instead!";
 				}
 			}
+		} else {
+			var playerButton2 = document.getElementById("playerChoice");
+			playerButton2.innerHTML = "";
+			playerButton2.innerHTML = "Choose player!";
+
 		}
 	}, 250);
 });
