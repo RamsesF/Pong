@@ -11,7 +11,8 @@ var serverProcentDown;
 
 var score = [0,0];
 
-var player1, player2, ball, maxX, maxY, balkWidth, balkHeight, ballWidth, X1,Y1, X2, Y2, ballX, ballY, fieldWidth, fieldHeight, ballStartPositionX, ballStartPositionY;
+var player1, player2, ball, scoreDiv, spectatorsDiv;
+var maxX, maxY, balkWidth, balkHeight, ballWidth, X1,Y1, X2, Y2, ballX, ballY, fieldWidth, fieldHeight;
 var timer;
 var gameRunning = false;
 
@@ -37,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		if(playerArray[0] != "empty" && playerArray[1] != "empty") {
 			var playerButton = document.getElementById("playerChoice");
 			playerButton.innerHTML = "";
-			playerButton.innerHTML = "Cannot choose player, already two readying up. Spectate instead!";
+			playerButton.innerHTML = "Players full!";
 
 
 			if (readyPlayers[0] == true && readyPlayers[1] == true) {
@@ -57,8 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
 					//do nothing
 					var playerButton2 = document.getElementById("playerChoice");
 					playerButton2.innerHTML = "";
-					playerButton2.innerHTML = "Cannot choose player, already two readying up. Spectate instead!";
-					playerButton2.innerHTML = "Cannot choose player, already two readying up. Spectate instead!";
+					playerButton2.innerHTML = "Players full!";
 				}
 			}
 		} else {
@@ -85,10 +85,10 @@ function toonChoice() {
 	var spectatorChoice = document.getElementById("spectatorChoice");
 	playerChoice.style.backgroundColor = "blue";
 	spectatorChoice.style.backgroundColor = "grey";
-	playerChoice.style.width = "50%";
-	spectatorChoice.style.width = "50%";
-	playerChoice.style.height = "100vh";
-	spectatorChoice.style.height = "100vh";
+	playerChoice.style.width = "100%";
+	spectatorChoice.style.width = "100%";
+	playerChoice.style.height = "50vh";
+	spectatorChoice.style.height = "50vh";
 	playerChoice.style.float = "left";
 	spectatorChoice.style.float = "left";
 	playerChoice.innerHTML = "Choose player!";
@@ -147,6 +147,7 @@ function showFieldForPlayers() {
 	playField.style.display = "block";
 }
 //When the field has been shown, show the players.
+var movePlayerTimeOut;
 function showPlayers() {
 	var field = document.getElementById("field");
 
@@ -160,6 +161,15 @@ function showPlayers() {
 	player1 = document.createElement("div");
 	player2 = document.createElement("div");
 	ball = document.createElement('div');
+	scoreDiv = document.createElement('div');
+	spectatorsDiv = document.createElement('div');
+
+	spectatorsDiv.innerHTML = spectators + " spectators";
+	spectatorsDiv.id = "spectators";
+
+	spectatorsDiv.style.left = maxX/33+"px";
+	spectatorsDiv.style.top = maxY/100+"px";
+
 
 	player1.style.width = balkWidth + "px";
 	player2.style.width = balkWidth + "px";
@@ -170,11 +180,17 @@ function showPlayers() {
 	player1.id = "player1";
 	player2.id = "player2";
 	ball.id = "ball";
+	scoreDiv.id = "score";
 
 	player1.className = "balk";
 	player2.className = "balk";
 
 
+
+	if(playerOneOrTwo == 1)	scoreDiv.innerHTML = score[0] + "-" +score[1];
+	else scoreDiv.innerHTML = score[1] + "-" +score[0];
+
+	scoreDiv.style.marginTop = maxY/2-10+"px";
 
 	ballWidth = maxX / 100;
 
@@ -189,12 +205,11 @@ function showPlayers() {
 	Y2 = maxY;
 
 
-	player1.style.backgroundColor = "yellow";
-	player2.style.backgroundColor = "yellow";
-
+	document.getElementsByTagName("html")[0].appendChild(spectatorsDiv);
 	field.appendChild(player1);
 	field.appendChild(player2);
 	field.appendChild(ball);
+	field.appendChild(scoreDiv);
 
 	init();
 
@@ -207,9 +222,12 @@ function showPlayers() {
 
 		playerOneOrTwo = 1;
 		document.getElementById("leftButton").addEventListener("mousedown", function() {
+			movePlayerTimeOut = setInterval(function(){movePlayerOne("left");}, 100);
 			movePlayerOne("left");
+
 		}, false);
 		document.getElementById("rightButton").addEventListener("mousedown", function() {
+			movePlayerTimeOut = setInterval(function(){movePlayerOne("right");}, 100);
 			movePlayerOne("right");
 		}, false);
 
@@ -217,15 +235,36 @@ function showPlayers() {
 		var field = document.getElementById("field");
 		field.style.webkitTransform = "rotate(180deg)";
 		field.style.webkitTransform = "scaleY(-1)";
+
+		scoreDiv.style.webkitTransform = "rotate(180deg)";
+		scoreDiv.style.webkitTransform = "scaleY(-1)";
+
 		playerOneOrTwo = 2;
 		document.getElementById("leftButton").addEventListener("mousedown",function() {
-			movePlayerTwo("left")
+			movePlayerTimeOut = setInterval(function(){movePlayerTwo("left");}, 100);
+			movePlayerTwo("left");
+
 		}, false);
 		document.getElementById("rightButton").addEventListener("mousedown", function() {
-			movePlayerTwo("right")
-		}, false);
+			movePlayerTimeOut = setInterval(function(){movePlayerTwo("right");}, 100);
+			movePlayerTwo("right");
 
+		}, false);
 	}
+
+	document.addEventListener("touchend",function() {
+		clearTimeout(movePlayerTimeOut);
+	}, false);
+	document.addEventListener("touchend", function() {
+		clearTimeout(movePlayerTimeOut);
+	}, false);
+	document.addEventListener("mouseup",function() {
+		clearTimeout(movePlayerTimeOut);
+	}, false);
+	document.addEventListener("mouseup", function() {
+		clearTimeout(movePlayerTimeOut);
+	}, false);
+
 }
 //1) ask positions at server 2) updatePlayers their positions with the positions
 function init(){
@@ -377,13 +416,19 @@ function showScoreAndSpectators() {
 		console.clear();
 		console.log("player1");
 		console.log("You: " + score[0] + " - P2: " + score[1]);
+		scoreDiv.innerHTML = score[0] + "-" +score[1];
+
 		console.log(spectators);
+		spectatorsDiv.innerHTML = spectators + " spectators";
 	} else {
 		//PLAYER TWO
 		console.clear();
 		console.log("player2");
 		console.log("You: " + score[1] + " - " + score[0] );
+		scoreDiv.innerHTML = score[1] + "-" +score[0];
+
 		console.log(spectators);
+		spectatorsDiv.innerHTML = spectators + " spectators";
 
 	}
 }

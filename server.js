@@ -93,7 +93,7 @@ io.on('connection', function(socket) {
 
     var hor = "O";
     var ver = "Z";
-    //socket.on("moveBall", function(){
+    var percentageMoveBall = 0.5;
     function moveBall(){
             var richting;
             if(positionData.ballY >= 161.5 && positionData.ballY < 164)
@@ -134,25 +134,24 @@ io.on('connection', function(socket) {
             richting = ver + hor;
 
 
-
+            percentageMoveBall*=1.001;
             if(richting == "ZO"){
-                positionData.ballY +=0.5;
-                positionData.ballX +=0.5;
+                positionData.ballY +=percentageMoveBall;
+                positionData.ballX +=percentageMoveBall;
             }
             else if(richting == "NO"){
-                positionData.ballY -=0.5;
-                positionData.ballX +=0.5;
+                positionData.ballY -=percentageMoveBall;
+                positionData.ballX +=percentageMoveBall;
             }
             else if(richting == "ZW"){
-                positionData.ballY +=0.5;
-                positionData.ballX -=0.5;
+                positionData.ballY +=percentageMoveBall;
+                positionData.ballX -=percentageMoveBall;
             }
             else if(richting == "NW"){
-                positionData.ballY -=0.5;
-                positionData.ballX -=0.5;
+                positionData.ballY -=percentageMoveBall;
+                positionData.ballX -=percentageMoveBall;
             }
-    }//);
-
+    }
         
     socket.on("resetPos", function() {
     resetData();
@@ -165,10 +164,24 @@ io.on('connection', function(socket) {
         var normalData = {
             playerOneX: 45,
             playerTwoX: 45,
-            ballX: 74.5,
+            ballX: 49.5,
             ballY: 74.5
         };
 
+
+        percentageMoveBall = 0.5;
+
+        if(ver=="Z") ver ="N";
+        else ver ="Z";
+
+        var random = Math.floor((Math.random() * 2) + 1);
+        if(random == 1)
+        {
+            hor = "O";
+        }
+        else{
+            hor = "W";
+        }
         positionData = normalData;
     }
     /* ---------------------------- */
