@@ -18,12 +18,9 @@ Pong with multiplayer, using Node.js and socket.io. Only two players, and unlimi
 
 ## TO DO
 - Holding controls instead of tapping.
-- Show ball.
-- Show score (saved at server).
-- Update positions from ball (together with players).
-- Win event and lose event.
-- ResetEverything function (when a player wins).
-- Showing amount of players and spectators.
+- Showing amount of spectators and score in HTML
+- CSS layout
+- speedup ball
 
 ## Versions
 ### V 0.1 (23-04-2016) 
