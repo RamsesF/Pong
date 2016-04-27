@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		if(playerArray[0] != "empty" && playerArray[1] != "empty") {
 			var playerButton = document.getElementById("playerChoice");
 			playerButton.innerHTML = "";
-			playerButton.innerHTML = "Cannot choose player, already two readying up. Spectate instead!";
+			playerButton.innerHTML = "Players full!";
 
 
 			if (readyPlayers[0] == true && readyPlayers[1] == true) {
@@ -58,8 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
 					//do nothing
 					var playerButton2 = document.getElementById("playerChoice");
 					playerButton2.innerHTML = "";
-					playerButton2.innerHTML = "Cannot choose player, already two readying up. Spectate instead!";
-					playerButton2.innerHTML = "Cannot choose player, already two readying up. Spectate instead!";
+					playerButton2.innerHTML = "Players full!";
 				}
 			}
 		} else {
